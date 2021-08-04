@@ -4,6 +4,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import TextField from "@material-ui/core/TextField";
 const EditArticle = (props) => {
     const [open, setOpen] = useState(false);
     const [article, setArticle] = useState({
@@ -32,12 +33,12 @@ const EditArticle = (props) => {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Edit Article</DialogTitle>
                 <DialogContent>
-                    <input type="text" placeholder="Brand" name="brand"
-                           value={article.identification} onChange={handleChange}/><br/>
-                    <input type="text" placeholder="Model" name="model"
-                           value={article.name} onChange={handleChange}/><br/>
-                    <input type="text" placeholder="Color" name="color"
-                           value={article.stock} onChange={handleChange}/><br/>
+                    <TextField autoFocus fullWidth label="Identification" name="identification"
+                               value={article.identification} onChange={handleChange}/>
+                    <TextField fullWidth label="Name" name="name"
+                               value={article.name} onChange={handleChange}/>
+                    <TextField fullWidth label="Stock" name="stock"
+                               value={article.stock} onChange={handleChange}/>
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Cancel</Button>
