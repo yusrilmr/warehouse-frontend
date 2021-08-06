@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-const AddArticle = (props) => {
+const AddArticleFile = (props) => {
     const [open, setOpen] = useState(false);
     const [article, setArticle] = useState({ identification: '', name: '', stock: 0 });
 
@@ -34,17 +34,12 @@ const AddArticle = (props) => {
     return (
         <div>
             <Button variant="outlined" color="primary" style={{margin: 10}} onClick={handleClickOpen}>
-                New Article
+                Upload
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Article</DialogTitle>
+                <DialogTitle>Upload Article File</DialogTitle>
                 <DialogContent>
-                    <TextField autoFocus fullWidth label="Identification" name="identification"
-                               value={article.identification} onChange={handleChange}/>
-                    <TextField fullWidth label="Name" name="name"
-                               value={article.name} onChange={handleChange}/>
-                    <TextField fullWidth label="Stock" name="stock"
-                               value={article.stock} onChange={handleChange}/>
+
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Cancel</Button>
@@ -54,4 +49,4 @@ const AddArticle = (props) => {
         </div>
     );
 };
-export default AddArticle;
+export default AddArticleFile;

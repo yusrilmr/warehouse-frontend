@@ -4,53 +4,75 @@ import ReactTable from "react-table";
 import 'react-table/react-table.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AddArticle from './AddArticle';
-import AddArticleFile from './AddArticleFile';
-import EditArticle from './EditArticle';
+import AddProduct from './AddProduct';
+import AddProductFile from './AddProductFile';
+import EditProduct from './EditProduct';
+import ProductDetail from './ProductDetail';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-class ArticleList extends Component {
+class ProductList extends Component {
     constructor(props) {
         super(props);
-        this.state = { articles: [] };
+        this.state = {
+            products: [],
+        };
     }
 
     componentDidMount() {
-        this.fetchArticles();
+        this.fetchProducts();
     }
 
-    fetchArticles = () => {
+    fetchProducts = () => {
         // Read the token from the session storage
         // and include it to Authorization header
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles',
+        fetch(SERVER_URL + 'products',
             {
                 headers: {'Authorization': token}
             })
             .then((response) => response.json())
             .then((responseData) => {
                 this.setState({
-                    articles: responseData,
+                    products: responseData,
                 });
             })
             .catch(err => console.error(err));
     }
 
-    // Delete article
+    fetchProductArticles = (productId) => {
+        // Read the token from the session storage
+        // and include it to Authorization header
+        const token = sessionStorage.getItem("jwt");
+        fetch(SERVER_URL + 'productArticles/search/findByProductId?productId=' + productId,
+            {
+                headers: {'Authorization': token}
+            })
+            .then((response) => response.json())
+            .then((responseData) => {
+                this.setState({
+                    productArticles: responseData
+                });
+            })
+            .catch(err => console.error(err));
+    }
+
+
+
+    // Delete product
     onDelClick = (id) => {
         if (window.confirm('Are you sure to delete?')) {
             const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'articles/' + id,
+            fetch(SERVER_URL + 'products/' + id,
                 {
                     method: 'DELETE',
                     headers: {'Authorization': token}
                 })
                 .then(res => {
-                    toast.success("Article deleted", {
+                    toast.success("Product deleted", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    this.fetchArticles();
+                    this.fetchProducts();
                 })
                 .catch(err => {
                     toast.error("Error when deleting", {
@@ -61,39 +83,39 @@ class ArticleList extends Component {
         }
     }
 
-    // Add new article
-    addArticle(article) {
+    // Add new product
+    addProduct(product) {
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles',
+        fetch(SERVER_URL + 'products',
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': token
                 },
-                body: JSON.stringify(article)
+                body: JSON.stringify(product)
             })
-            .then(res => this.fetchArticles())
+            .then(res => this.fetchProducts())
             .catch(err => console.error(err))
     }
 
-    // Update article
-    updateArticle(article, id) {
+    // Update product
+    updateProduct(product, id) {
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles/' + id,
+        fetch(SERVER_URL + 'products/' + id,
             {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': token
                 },
-                body: JSON.stringify(article)
+                body: JSON.stringify(product)
             })
             .then(res => {
                 toast.success("Changes saved", {
                     position: toast.POSITION.BOTTOM_LEFT
                 });
-                this.fetchArticles();
+                this.fetchProducts();
             })
             .catch(err =>
                 toast.error("Error when saving", {
@@ -104,21 +126,28 @@ class ArticleList extends Component {
 
     render() {
         const columns = [{
-            Header: 'Identification',
-            accessor: 'identification'
+            Header: 'Id',
+            accessor: 'id'
         }, {
             Header: 'Name',
-            accessor: 'name',
+            accessor: 'name'
         }, {
-            Header: 'Stock',
-            accessor: 'stock',
+            Header: 'Availability',
+            accessor: 'availability',
+        }, {
+            sortable: false,
+            filterable: false,
+            width: 100,
+            accessor: '_links.self.href',
+            Cell: ({value, row}) => (<ProductDetail product={row} link={value}
+                                                    fetchProductArticles={this.fetchProductArticles}/>)
         }, {
             sortable: false,
             filterable: false,
             width: 100,
             accessor: 'id',
-            Cell: ({value, row}) => (<EditArticle article={row} link={value} updateArticle={this.updateArticle}
-                                              fetchArticles={this.fetchArticles} />)
+            Cell: ({value, row}) => (<EditProduct product={row} link={value} updateProduct={this.updateProduct}
+                                                  fetchProducts={this.fetchProducts} />)
         }, {
             sortable: false,
             filterable: false,
@@ -132,16 +161,16 @@ class ArticleList extends Component {
             <div className="App">
                 <Grid container>
                     <Grid item>
-                        <AddArticle addArticle={this.addArticle} fetchArticles={this.fetchArticles} />
+                        <AddProduct addProduct={this.addProduct} fetchProducts={this.fetchProducts} />
                     </Grid>
                     <Grid item>
-                        <AddArticleFile addArticle={this.addArticle} fetchArticles={this.fetchArticles} />
+                        <AddProductFile addProduct={this.addProduct} fetchProducts={this.fetchProducts} />
                     </Grid>
                 </Grid>
-                <ReactTable data={this.state.articles} columns={columns} filterable={true}/>
+                <ReactTable data={this.state.products} columns={columns} filterable={true}/>
                 <ToastContainer autoClose={1500} />
             </div>
         );
     }
 }
-export default ArticleList;
+export default ProductList;

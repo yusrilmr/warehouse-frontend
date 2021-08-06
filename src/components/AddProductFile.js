@@ -6,13 +6,14 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-const AddArticle = (props) => {
+const AddProductFile = (props) => {
     const [open, setOpen] = useState(false);
-    const [article, setArticle] = useState({ identification: '', name: '', stock: 0 });
+    const [product, setProduct] = useState({
+        name: '', contain_products: []
+    });
 
     // Open the modal form
     const handleClickOpen = () => {
-        setArticle({ identification: '', name: '', stock: 0 })
         setOpen(true);
     };
 
@@ -22,36 +23,30 @@ const AddArticle = (props) => {
     };
 
     const handleChange = (event) => {
-        setArticle({...article, [event.target.name]: event.target.value});
+        setProduct({...product, [event.target.name]: event.target.value});
     }
 
-    // Save article and close modal form
+    // Save product and close modal form
     const handleSave = () => {
-        props.addArticle(article);
+        props.addProduct(product);
         handleClose();
     }
 
     return (
         <div>
             <Button variant="outlined" color="primary" style={{margin: 10}} onClick={handleClickOpen}>
-                New Article
+                Upload
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Article</DialogTitle>
+                <DialogTitle>New Product</DialogTitle>
                 <DialogContent>
-                    <TextField autoFocus fullWidth label="Identification" name="identification"
-                               value={article.identification} onChange={handleChange}/>
-                    <TextField fullWidth label="Name" name="name"
-                               value={article.name} onChange={handleChange}/>
-                    <TextField fullWidth label="Stock" name="stock"
-                               value={article.stock} onChange={handleChange}/>
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Cancel</Button>
-                    <Button color="primary" onClick={handleSave}>Save</Button>
+                    <Button color="primary" onClick={handleSave}>Upload</Button>
                 </DialogActions>
             </Dialog>
         </div>
     );
 };
-export default AddArticle;
+export default AddProductFile;
