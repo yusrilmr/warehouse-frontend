@@ -1,15 +1,16 @@
+import 'react-table/react-table.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 import React, { Component } from 'react';
 import { SERVER_URL } from '../constants.js';
-import ReactTable from "react-table";
-import 'react-table/react-table.css';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import ReactTable from "react-table";
 import AddProduct from './AddProduct';
 import AddProductFile from './AddProductFile';
 import EditProduct from './EditProduct';
 import ProductDetail from './ProductDetail';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 
 class ProductList extends Component {
     constructor(props) {

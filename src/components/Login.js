@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import {SERVER_URL} from '../constants.js';
-import { ToastContainer, toast } from 'react-toastify';
+/* eslint-disable */
 import 'react-toastify/dist/ReactToastify.css';
-import TextField from '@material-ui/core/TextField';
+
+import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import ArticleList from './ArticleList';
 import ProductList from './ProductList';
+import {SERVER_URL} from '../constants.js';
 
 const Login = () => {
     const [user, setUser] = useState({username: '', password: ''})
@@ -41,8 +43,8 @@ const Login = () => {
     }
 
     if (isAuthenticated === true) {
-        return (<ArticleList />)
-        // return (<ProductList />)
+        // return (<ArticleList />)
+        return (<ProductList />)
     }
     else {
         return (
