@@ -17,6 +17,7 @@ class ProductList extends Component {
         super(props);
         this.state = {
             products: [],
+            productDetail: {}
         };
     }
 
@@ -25,8 +26,6 @@ class ProductList extends Component {
     }
 
     fetchProducts = () => {
-        // Read the token from the session storage
-        // and include it to Authorization header
         const token = sessionStorage.getItem("jwt");
         fetch(SERVER_URL + 'products',
             {
@@ -41,24 +40,28 @@ class ProductList extends Component {
             .catch(err => console.error(err));
     }
 
-    fetchProductArticles = (productId) => {
-        // Read the token from the session storage
-        // and include it to Authorization header
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'productArticles/search/findByProductId?productId=' + productId,
-            {
-                headers: {'Authorization': token}
-            })
-            .then((response) => response.json())
-            .then((responseData) => {
-                this.setState({
-                    productArticles: responseData
-                });
-            })
-            .catch(err => console.error(err));
+    sellProduct = (id) => {
+        if (window.confirm('Are you sure to sell this product?')) {
+            const token = sessionStorage.getItem("jwt");
+            fetch(SERVER_URL + 'products/sell/' + id,
+                {
+                    method: 'DELETE',
+                    headers: {'Authorization': token}
+                })
+                .then(res => {
+                    toast.success("Product deleted", {
+                        position: toast.POSITION.BOTTOM_LEFT
+                    });
+                    this.fetchProducts();
+                })
+                .catch(err => {
+                    toast.error("Error when deleting", {
+                        position: toast.POSITION.BOTTOM_LEFT
+                    });
+                    console.error(err)
+                })
+        }
     }
-
-
 
     // Delete product
     onDelClick = (id) => {
@@ -139,24 +142,39 @@ class ProductList extends Component {
             sortable: false,
             filterable: false,
             width: 100,
-            accessor: '_links.self.href',
-            Cell: ({value, row}) => (<ProductDetail product={row} link={value}
-                                                    fetchProductArticles={this.fetchProductArticles}/>)
+            accessor: 'id',
+            Cell: ({value, row}) => (
+                <Button size="small" color="primary" onClick={()=>{this.sellProduct(value)}}>
+                    Sell
+                </Button>
+            )
         }, {
             sortable: false,
             filterable: false,
             width: 100,
             accessor: 'id',
-            Cell: ({value, row}) => (<EditProduct product={row} link={value} updateProduct={this.updateProduct}
-                                                  fetchProducts={this.fetchProducts} />)
+            Cell: ({value, row}) => (
+                <ProductDetail product={row} link={value} fetchProductDetail={this.fetchProductDetail}/>
+            )
         }, {
             sortable: false,
             filterable: false,
             width: 100,
             accessor: 'id',
-            Cell: ({value}) => (<Button size="small" color="secondary" onClick={()=>{this.onDelClick(value)}}>
-                Delete
-            </Button>)
+            Cell: ({value, row}) => (
+                <EditProduct product={row} link={value} updateProduct={this.updateProduct}
+                             fetchProducts={this.fetchProducts} />
+            )
+        }, {
+            sortable: false,
+            filterable: false,
+            width: 100,
+            accessor: 'id',
+            Cell: ({value}) => (
+                <Button size="small" color="secondary" onClick={()=>{this.onDelClick(value)}}>
+                    Delete
+                </Button>
+            )
         }]
         return (
             <div className="App">

@@ -118,16 +118,20 @@ class ArticleList extends Component {
             filterable: false,
             width: 100,
             accessor: 'id',
-            Cell: ({value, row}) => (<EditArticle article={row} link={value} updateArticle={this.updateArticle}
-                                              fetchArticles={this.fetchArticles} />)
+            Cell: ({value, row}) => (
+                <EditArticle article={row} link={value} updateArticle={this.updateArticle}
+                             fetchArticles={this.fetchArticles} />
+            )
         }, {
             sortable: false,
             filterable: false,
             width: 100,
             accessor: 'id',
-            Cell: ({value}) => (<Button size="small" color="secondary" onClick={()=>{this.onDelClick(value)}}>
-                Delete
-            </Button>)
+            Cell: ({value}) => (
+                <Button size="small" color="secondary" onClick={()=>{this.onDelClick(value)}}>
+                    Delete
+                </Button>
+            )
         }]
         return (
             <div className="App">

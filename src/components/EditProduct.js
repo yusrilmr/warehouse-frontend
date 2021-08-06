@@ -26,8 +26,6 @@ const EditProduct = (props) => {
     }
     // Update product and close modal form
     const handleSave = () => {
-        console.log(product);
-        console.log(props.link);
         props.updateProduct(product, props.link);
         handleClose();
     }
