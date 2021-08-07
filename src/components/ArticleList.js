@@ -78,7 +78,12 @@ class ArticleList extends Component {
                 },
                 body: JSON.stringify(article)
             })
-            .then(res => this.fetchArticles())
+            .then(res => {
+                toast.success("New article saved", {
+                    position: toast.POSITION.BOTTOM_LEFT
+                });
+                this.fetchArticles()
+            })
             .catch(err => console.error(err))
     }
 

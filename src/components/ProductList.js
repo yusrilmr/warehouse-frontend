@@ -41,25 +41,6 @@ class ProductList extends Component {
             .catch(err => console.error(err));
     }
 
-    // fetchProducts = () => {
-    //     const token = sessionStorage.getItem("jwt");
-    //     console.log(token)
-    //     // const token = localStorage.getItem("token");
-    //     // console.log(token);
-    //     console.log(SERVER_URL + 'products/');
-    //     fetch(SERVER_URL + 'products/',
-    //         {
-    //             headers: {'Authorization': token}
-    //         })
-    //         .then((response) => response.json())
-    //         .then((responseData) => {
-    //             this.setState({
-    //                 products: responseData,
-    //             });
-    //         })
-    //         .catch(err => console.error(err));
-    // }
-
     sellProduct = (id) => {
         if (window.confirm('Are you sure to sell this product?')) {
             const token = sessionStorage.getItem("jwt");
@@ -207,10 +188,10 @@ class ProductList extends Component {
                         <MenuNav />
                     </Grid>
                     <Grid item>
-                        <AddProduct addProduct={this.addProduct} fetchProducts={this.fetchProducts} />
+                        <AddProduct addProduct={this.addProduct} fetchProductQuantities={this.fetchProductQuantities} />
                     </Grid>
                     <Grid item>
-                        <AddProductFile addProduct={this.addProduct} fetchProducts={this.fetchProducts} />
+                        <AddProductFile addProduct={this.addProduct} fetchProductQuantities={this.fetchProductQuantities} />
                     </Grid>
                 </Grid>
                 <ReactTable data={this.state.productQuantities} columns={columns} filterable={true} defaultPageSize= {10}/>
