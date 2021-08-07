@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import PropTypes from "prop-types";
 import Dialog from '@material-ui/core/Dialog';
@@ -9,12 +10,18 @@ import Button from '@material-ui/core/Button';
 
 const AddProduct = (props) => {
     const [open, setOpen] = useState(false);
+    const [errorNameText, setErrorNameText] = useState('');
     const [product, setProduct] = useState({
         name: '', contain_products: []
     });
 
+    const emptyErrorText = () => {
+        setErrorNameText('')
+    };
+
     // Open the modal form
     const handleClickOpen = () => {
+        emptyErrorText();
         setOpen(true);
     };
 
@@ -25,24 +32,37 @@ const AddProduct = (props) => {
 
     const handleChange = (event) => {
         setProduct({...product, [event.target.name]: event.target.value});
-    }
+    };
 
     // Save product and close modal form
     const handleSave = () => {
-        props.addProduct(product);
-        handleClose();
-    }
+        if (isValid()) {
+            props.addProduct(product);
+            handleClose();
+        }
+    };
+
+    const isValid = () => {
+        emptyErrorText();
+        let valid = true;
+        if (product.name === "") {
+            setErrorNameText('This field is mandatory');
+            valid = false;
+        }
+        return valid;
+    };
 
     return (
         <div>
             <Button variant="outlined" color="primary" style={{margin: 10}} onClick={handleClickOpen}>
-                New Product
+                Add Product
             </Button>
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Product</DialogTitle>
+            <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
+                <DialogTitle>Add Product</DialogTitle>
                 <DialogContent>
-                    <TextField autoFocus fullWidth label="Name" name="name"
-                               value={product.name} onChange={handleChange}/>
+                    <TextField autoFocus required fullWidth label="Name" name="name"
+                               value={product.name} onChange={handleChange}
+                               error ={!!errorNameText.length} helperText={errorNameText} />
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Cancel</Button>

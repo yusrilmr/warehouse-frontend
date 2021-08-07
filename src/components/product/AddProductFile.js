@@ -1,12 +1,13 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import { DropzoneDialog } from 'material-ui-dropzone'
+import PropTypes from "prop-types";
 import Button from '@material-ui/core/Button';
-import AttachFile from '@material-ui/icons/AttachFile';
-import {SERVER_URL} from "../constants";
+import {DropzoneDialog} from "material-ui-dropzone";
+import AttachFile from "@material-ui/icons/AttachFile";
+import {SERVER_URL} from "../../constants";
 import {toast} from "react-toastify";
 
-const AddArticleFile = (props) => {
+const AddProductFile = (props) => {
     const [open, setOpen] = useState(false);
 
     // Close the modal form
@@ -21,7 +22,7 @@ const AddArticleFile = (props) => {
         fileReader.onload = e => {
             const fileContent = e.target.result;
             const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'articles/upload',
+            fetch(SERVER_URL + 'products/upload',
                 {
                     method: 'POST',
                     headers: {
@@ -31,15 +32,14 @@ const AddArticleFile = (props) => {
                     body: fileContent
                 })
                 .then(res => {
-                    console.log(res.status);
                     if (res.ok){
-                        toast.success("Article file uploaded", {
+                        toast.success("Products file uploaded", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
-                        props.fetchArticles();
+                        props.fetchProductQuantities();
                     }
                     else if (res.status === 409) {
-                        toast.error("Duplicate article", {
+                        toast.error("Duplicate product", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
                         console.log(res)
@@ -83,4 +83,4 @@ const AddArticleFile = (props) => {
         </div>
     );
 };
-export default AddArticleFile;
+export default AddProductFile;

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import ArticleList from './ArticleList';
+import ArticleList from './article/ArticleList';
 import {SERVER_URL} from '../constants.js';
 
 const Login = () => {

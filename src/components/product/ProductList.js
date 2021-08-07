@@ -11,8 +11,8 @@ import AddProduct from './AddProduct';
 import AddProductFile from './AddProductFile';
 import EditProduct from './EditProduct';
 import ProductDetail from './ProductDetail';
-import { SERVER_URL } from '../constants.js';
-import MenuNav from "./MenuNav";
+import { SERVER_URL } from '../../constants.js';
+import MenuNav from "../MenuNav";
 
 class ProductList extends Component {
     constructor(props) {
@@ -97,7 +97,7 @@ class ProductList extends Component {
                 },
                 body: JSON.stringify(product)
             })
-            .then(res => this.fetchProducts())
+            .then(res => this.fetchProductQuantities())
             .catch(err => console.error(err))
     }
 
@@ -117,7 +117,7 @@ class ProductList extends Component {
                 toast.success("Changes saved", {
                     position: toast.POSITION.BOTTOM_LEFT
                 });
-                this.fetchProducts();
+                this.fetchProductQuantities();
             })
             .catch(err =>
                 toast.error("Error when saving", {

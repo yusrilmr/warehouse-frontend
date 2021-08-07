@@ -10,8 +10,8 @@ import Grid from '@material-ui/core/Grid';
 import AddArticle from './AddArticle';
 import AddArticleFile from './AddArticleFile';
 import EditArticle from './EditArticle';
-import MenuNav from './MenuNav';
-import { SERVER_URL } from '../constants.js';
+import MenuNav from '../MenuNav';
+import { SERVER_URL } from '../../constants.js';
 
 class ArticleList extends Component {
     constructor(props) {

@@ -5,8 +5,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Login from './components/Login';
-import ArticleList from "./components/ArticleList";
-import ProductList from "./components/ProductList";
+import ArticleList from "./components/article/ArticleList";
+import ProductList from "./components/product/ProductList";
 import SecuredRoute from "./components/SecuredRoute";
 
 function App() {
