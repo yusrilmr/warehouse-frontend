@@ -17,25 +17,23 @@ const ProductDetail = (props) => {
 
     const fetchProductDetail = (productId) => {
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products/' + productId + '/detail',
+        fetch(SERVER_URL + 'product-details/' + productId,
             {
                 headers: {'Authorization': token}
             })
             .then((response) => response.json())
             .then((responseData) => {
-                console.log(responseData);
                 setProductDetail(responseData);
-                console.log(productDetail);
             })
             .catch(err => console.error(err));
     }
 
     const handleClickOpen = () => {
+        console.log(props.product);
         setProduct({
-            id: props.product.id, name: props.product.name
+            id: props.product.productId, name: props.product.productName
         })
-        console.log(props.product.id);
-        fetchProductDetail(props.product.id);
+        fetchProductDetail(props.product.productId);
         setOpen(true);
     };
 
@@ -55,7 +53,7 @@ const ProductDetail = (props) => {
             <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
                 <DialogTitle>Product Detail</DialogTitle>
                 <DialogContent style={{height:'500px'}}> {/* the max height already handled by material-ui */}
-                    <ReactTable data={productDetail} columns={columns} filterable={true}/>
+                    <ReactTable data={productDetail} columns={columns} filterable={true} defaultPageSize= {10}/>
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Close</Button>

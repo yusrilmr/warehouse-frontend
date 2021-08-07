@@ -1,3 +1,4 @@
+/* eslint-disable */
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-table/react-table.css';
 
@@ -9,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import AddArticle from './AddArticle';
 import AddArticleFile from './AddArticleFile';
 import EditArticle from './EditArticle';
+import MenuNav from './MenuNav';
 import { SERVER_URL } from '../constants.js';
 
 class ArticleList extends Component {
@@ -22,10 +24,12 @@ class ArticleList extends Component {
     }
 
     fetchArticles = () => {
-        // Read the token from the session storage
-        // and include it to Authorization header
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles',
+        console.log(token)
+        // const token = localStorage.getItem("token");
+        // console.log(token);
+        console.log(SERVER_URL + 'articles/');
+        fetch(SERVER_URL + 'articles/',
             {
                 headers: {'Authorization': token}
             })
@@ -137,13 +141,16 @@ class ArticleList extends Component {
             <div className="App">
                 <Grid container>
                     <Grid item>
+                        <MenuNav />
+                    </Grid>
+                    <Grid item>
                         <AddArticle addArticle={this.addArticle} fetchArticles={this.fetchArticles} />
                     </Grid>
                     <Grid item>
                         <AddArticleFile addArticle={this.addArticle} fetchArticles={this.fetchArticles} />
                     </Grid>
                 </Grid>
-                <ReactTable data={this.state.articles} columns={columns} filterable={true}/>
+                <ReactTable data={this.state.articles} columns={columns} filterable={true} defaultPageSize= {10}/>
                 <ToastContainer autoClose={1500} />
             </div>
         );

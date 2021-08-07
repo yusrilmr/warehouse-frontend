@@ -1,8 +1,8 @@
+/* eslint-disable */
 import 'react-table/react-table.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import React, { Component } from 'react';
-import { SERVER_URL } from '../constants.js';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -11,34 +11,54 @@ import AddProduct from './AddProduct';
 import AddProductFile from './AddProductFile';
 import EditProduct from './EditProduct';
 import ProductDetail from './ProductDetail';
+import { SERVER_URL } from '../constants.js';
+import MenuNav from "./MenuNav";
 
 class ProductList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: [],
-            productDetail: {}
+            productQuantities: []
         };
     }
 
     componentDidMount() {
-        this.fetchProducts();
+        this.fetchProductQuantities();
     }
 
-    fetchProducts = () => {
+    fetchProductQuantities = () => {
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products',
+        fetch(SERVER_URL + 'product-quantities/',
             {
                 headers: {'Authorization': token}
             })
             .then((response) => response.json())
             .then((responseData) => {
                 this.setState({
-                    products: responseData,
+                    productQuantities: responseData,
                 });
             })
             .catch(err => console.error(err));
     }
+
+    // fetchProducts = () => {
+    //     const token = sessionStorage.getItem("jwt");
+    //     console.log(token)
+    //     // const token = localStorage.getItem("token");
+    //     // console.log(token);
+    //     console.log(SERVER_URL + 'products/');
+    //     fetch(SERVER_URL + 'products/',
+    //         {
+    //             headers: {'Authorization': token}
+    //         })
+    //         .then((response) => response.json())
+    //         .then((responseData) => {
+    //             this.setState({
+    //                 products: responseData,
+    //             });
+    //         })
+    //         .catch(err => console.error(err));
+    // }
 
     sellProduct = (id) => {
         if (window.confirm('Are you sure to sell this product?')) {
@@ -49,10 +69,10 @@ class ProductList extends Component {
                     headers: {'Authorization': token}
                 })
                 .then(res => {
-                    toast.success("Product deleted", {
+                    toast.success("Product sold and inventory has been updated accordingly", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    this.fetchProducts();
+                    this.fetchProductQuantities();
                 })
                 .catch(err => {
                     toast.error("Error when deleting", {
@@ -63,28 +83,25 @@ class ProductList extends Component {
         }
     }
 
-    // Delete product
-    onDelClick = (id) => {
-        if (window.confirm('Are you sure to delete?')) {
-            const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'products/' + id,
-                {
-                    method: 'DELETE',
-                    headers: {'Authorization': token}
-                })
-                .then(res => {
-                    toast.success("Product deleted", {
-                        position: toast.POSITION.BOTTOM_LEFT
-                    });
-                    this.fetchProducts();
-                })
-                .catch(err => {
-                    toast.error("Error when deleting", {
-                        position: toast.POSITION.BOTTOM_LEFT
-                    });
-                    console.error(err)
-                })
-        }
+    deleteProduct(productId) {
+        const token = sessionStorage.getItem("jwt");
+        fetch(SERVER_URL + 'products/' + productId,
+            {
+                method: 'DELETE',
+                headers: {'Authorization': token}
+            })
+            .then(res => {
+                toast.success("Product deleted", {
+                    position: toast.POSITION.BOTTOM_LEFT
+                });
+                this.fetchProductQuantities();
+            })
+            .catch(err => {
+                toast.error("Error when deleting", {
+                    position: toast.POSITION.BOTTOM_LEFT
+                });
+                console.error(err)
+            })
     }
 
     // Add new product
@@ -104,9 +121,9 @@ class ProductList extends Component {
     }
 
     // Update product
-    updateProduct(product, id) {
+    updateProduct(product, productId) {
         const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products/' + id,
+        fetch(SERVER_URL + 'products/' + productId,
             {
                 method: 'PUT',
                 headers: {
@@ -128,23 +145,30 @@ class ProductList extends Component {
             )
     }
 
+    onDeleteClick = (productId) => {
+        if (window.confirm('Are you sure to delete?')) {
+            this.deleteProduct(productId)
+        }
+    }
+
     render() {
         const columns = [{
             Header: 'Id',
-            accessor: 'id'
+            accessor: 'productId'
         }, {
             Header: 'Name',
-            accessor: 'name'
+            accessor: 'productName'
         }, {
-            Header: 'Availability',
-            accessor: 'availability',
+            Header: 'Quantity',
+            accessor: 'quantity',
         }, {
             sortable: false,
             filterable: false,
             width: 100,
-            accessor: 'id',
+            accessor: 'productId',
             Cell: ({value, row}) => (
-                <Button size="small" color="primary" onClick={()=>{this.sellProduct(value)}}>
+                <Button size="small" color="primary" disabled={row.quantity <= 0}
+                        onClick={()=>{this.sellProduct(value)}}>
                     Sell
                 </Button>
             )
@@ -152,26 +176,26 @@ class ProductList extends Component {
             sortable: false,
             filterable: false,
             width: 100,
-            accessor: 'id',
+            accessor: 'productId',
             Cell: ({value, row}) => (
-                <ProductDetail product={row} link={value} fetchProductDetail={this.fetchProductDetail}/>
+                <ProductDetail product={row} link={value} />
             )
         }, {
             sortable: false,
             filterable: false,
             width: 100,
-            accessor: 'id',
+            accessor: 'productId',
             Cell: ({value, row}) => (
                 <EditProduct product={row} link={value} updateProduct={this.updateProduct}
-                             fetchProducts={this.fetchProducts} />
+                             fetchProductQuantities={this.fetchProductQuantities} />
             )
         }, {
             sortable: false,
             filterable: false,
             width: 100,
-            accessor: 'id',
+            accessor: 'productId',
             Cell: ({value}) => (
-                <Button size="small" color="secondary" onClick={()=>{this.onDelClick(value)}}>
+                <Button size="small" color="secondary" onClick={()=>{this.onDeleteClick(value)}}>
                     Delete
                 </Button>
             )
@@ -180,13 +204,16 @@ class ProductList extends Component {
             <div className="App">
                 <Grid container>
                     <Grid item>
+                        <MenuNav />
+                    </Grid>
+                    <Grid item>
                         <AddProduct addProduct={this.addProduct} fetchProducts={this.fetchProducts} />
                     </Grid>
                     <Grid item>
                         <AddProductFile addProduct={this.addProduct} fetchProducts={this.fetchProducts} />
                     </Grid>
                 </Grid>
-                <ReactTable data={this.state.products} columns={columns} filterable={true}/>
+                <ReactTable data={this.state.productQuantities} columns={columns} filterable={true} defaultPageSize= {10}/>
                 <ToastContainer autoClose={1500} />
             </div>
         );

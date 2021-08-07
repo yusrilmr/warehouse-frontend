@@ -14,7 +14,7 @@ const EditProduct = (props) => {
     });
     const handleClickOpen = () => {
         setProduct({
-            name: props.product.name
+            name: props.product.productName
         })
         setOpen(true);
     };
