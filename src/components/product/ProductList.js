@@ -124,6 +124,9 @@ class ProductList extends Component {
             Header: 'Name',
             accessor: 'productName'
         }, {
+            Header: 'Price',
+            accessor: 'productPrice'
+        }, {
             Header: 'Quantity',
             accessor: 'quantity',
         }, {

@@ -16,6 +16,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ProductAPI from "../../services/productAPI";
+import {SERVER_URL} from "../../services/config";
+import {toast} from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -29,42 +32,99 @@ const useStyles = makeStyles((theme) => ({
 const EditProduct = (props) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [product, setProduct] = useState({ name: '' });
+    const [product, setProduct] = useState({ name: '', price: 0 });
     const [articles, setArticles] = useState([]);
+
+    const [productArticleIds, setProductArticleIds] = useState([]);
     const [containArticles, setContainArticles] = useState([]);
     const [amounts, setAmounts] = useState([]);
 
     const [errorNameText, setErrorNameText] = useState('');
+    const [errorPriceText, setErrorPriceText] = useState('');
     const [errorArticleText, setErrorArticleText] = useState('');
     const [errorAmountText, setErrorAmountText] = useState('');
 
+    const getProductDetail = () => {
+        new ProductAPI().fetchProductDetail(props.productId)
+            .then((responseData) => {
+                const arrContainArticles = []
+                const arrAmounts = []
+                const arrProductArticleIds = []
+                for(let i = 0; i < responseData.length; i++) {
+                    arrProductArticleIds.push(responseData[i].productArticleId);
+                    arrContainArticles.push(responseData[i].articleId);
+                    arrAmounts.push(responseData[i].totalArticle);
+                }
+                setProductArticleIds(arrProductArticleIds);
+                setContainArticles(arrContainArticles);
+                setAmounts(arrAmounts);
+
+            })
+            .catch(err => console.error(err));
+    };
+
     const emptyErrorText = () => {
-        setErrorNameText('')
-        setErrorArticleText('')
-        setErrorAmountText('')
+        setErrorNameText('');
+        setErrorPriceText('');
+        setErrorArticleText('');
+        setErrorAmountText('');
     };
 
-    const emptyArticlesAndAmounts = () => {
-        setContainArticles([]);
-        setAmounts([]);
-    };
-
-    const addArticleAndAmount = (article, amount) => {
+    const addProductArticleAttribute = (productArticleId, article, amount) => {
         setContainArticles([...containArticles, article]);
         setAmounts([...amounts, amount]);
+        setProductArticleIds([...productArticleIds, productArticleId]);
     };
 
-    const deleteArticleAndAmount = (index) => {
+    const deleteProductArticleAttribute = (index) => {
+        if (window.confirm('Are you sure to remove this article from the product?')) {
+            if (productArticleIds[index]) {
+                deleteProductArticle(index);
+            }
+            else {
+                deleteProductArticleUI(index);
+            }
+        }
+    };
+
+    const deleteProductArticle = (index) => {
+        const productArticleId = productArticleIds[index];
+        const token = sessionStorage.getItem("jwt");
+        fetch(SERVER_URL + 'product-articles/' + productArticleId,
+            {
+                method: 'DELETE',
+                headers: {'Authorization': token}
+            })
+            .then(res => {
+                deleteProductArticleUI(index);
+                toast.success("article is removed from the product", {
+                    position: toast.POSITION.BOTTOM_LEFT
+                });
+            })
+            .catch(err => {
+                toast.error("Error when deleting", {
+                    position: toast.POSITION.BOTTOM_LEFT
+                });
+                console.error(err)
+            })
+    };
+
+    const deleteProductArticleUI = (index) => {
         const arrContainArticles = [...containArticles];
         const arrAmounts = [...amounts];
+        const arrProductArticleIds = [...productArticleIds];
+
         arrContainArticles.splice(index, 1);
         arrAmounts.splice(index, 1);
+        arrProductArticleIds.splice(index, 1);
+
         setContainArticles(arrContainArticles);
         setAmounts(arrAmounts);
-    };
+        setProductArticleIds(arrProductArticleIds);
+    }
 
     const handleAddArticle = () => {
-        addArticleAndAmount("", 0);
+        addProductArticleAttribute(null, "", 0);
     };
 
     const handleAmountChange = (index, e) => {
@@ -92,12 +152,16 @@ const EditProduct = (props) => {
     const handleClickOpen = () => {
         emptyErrorText();
         setProduct({
-            name: props.product.productName
+            name: props.product.productName,
+            price: props.product.productPrice
         })
 
-        // Get articles to be shows on the article's Select.
+        // Get articles to be shown on the article's Select.
         new ArticleAPI().fetchArticles()
-            .then(responseData => { setArticles(responseData); })
+            .then(responseData => {
+                setArticles(responseData);
+                getProductDetail();
+            })
             .catch(err => console.error(err));
 
         setOpen(true);
@@ -117,10 +181,12 @@ const EditProduct = (props) => {
             let entity = {
                 id: props.productId,
                 name: product.name,
+                price: product.price,
                 productArticles: []
             }
             for(let i = 0; i < containArticles.length; i++) {
                 entity.productArticles.push({
+                    id: productArticleIds[i],
                     articleId: containArticles[i],
                     totalArticle: amounts[i]
                 });
@@ -137,6 +203,14 @@ const EditProduct = (props) => {
             setErrorNameText("This field is mandatory");
             valid = false;
         }
+        if (product.price < 0) {
+            setErrorPriceText("The field cannot be negative");
+            valid = false;
+        }
+        if (product.price === "") {
+            setErrorPriceText("The field cannot be empty");
+            valid = false;
+        }
         const isArticlesDuplicate = containArticles.some(
             (val, i) => containArticles.indexOf(val) !== i
         )
@@ -148,7 +222,7 @@ const EditProduct = (props) => {
             setErrorArticleText("cannot be empty");
             valid = false;
         }
-        if (amounts.some(el => el < 0)) {
+        if (amounts.some(el => el <= 0)) {
             setErrorAmountText("Value > 0");
             valid = false;
         }
@@ -164,6 +238,9 @@ const EditProduct = (props) => {
                     <TextField autoFocus required fullWidth label="Name" name="name"
                                value={product.name} onChange={handleChange}
                                error ={!!errorNameText.length} helperText={errorNameText}/>
+                    <TextField autoFocus required fullWidth label="Price" name="price" margin="dense" type="number"
+                               defaultValue={0} value={product.price} onChange={handleChange}
+                               error ={!!errorPriceText.length} helperText={errorPriceText} />
                     {containArticles.map((containArticle, index) => (
                         <Box key={"article" + index}>
                             <Grid container spacing={1} alignItems="flex-end">
@@ -189,14 +266,8 @@ const EditProduct = (props) => {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <TextField
-                                        fullWidth
-                                        label="Amount"
-                                        name="amount"
-                                        type="number"
-                                        defaultValue={0}
-                                        error ={!!errorAmountText.length}
-                                        helperText={errorAmountText}
+                                    <TextField fullWidth label="Amount" name="amount" type="number" defaultValue={0}
+                                        value={amounts[index]} error ={!!errorAmountText.length} helperText={errorAmountText}
                                         onChange={
                                             (e) => handleAmountChange(index, e)
                                         }
@@ -205,7 +276,7 @@ const EditProduct = (props) => {
                                 <Grid item xs={1}>
                                     <div
                                         className="font-icon-wrapper"
-                                        onClick={() => deleteArticleAndAmount(index)}>
+                                        onClick={() => deleteProductArticleAttribute(index)}>
                                         <IconButton aria-label="delete">
                                             <DeleteIcon />
                                         </IconButton>

@@ -6,22 +6,15 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { SERVER_URL } from "../../services/config";
+import ProductAPI from "../../services/productAPI";
 
 const ProductDetail = (props) => {
     const [open, setOpen] = useState(false);
     const [productDetail, setProductDetail] = useState([]);
-    const [product, setProduct] = useState({
-        id: '', name: ''
-    });
+    const [product, setProduct] = useState({ id: '', name: '' });
 
-    const fetchProductDetail = (productId) => {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'product-details/' + productId,
-            {
-                headers: {'Authorization': token}
-            })
-            .then((response) => response.json())
+    const refreshProductDetail = (productId) => {
+        new ProductAPI().fetchProductDetail(productId)
             .then((responseData) => {
                 setProductDetail(responseData);
             })
@@ -29,11 +22,10 @@ const ProductDetail = (props) => {
     }
 
     const handleClickOpen = () => {
-        console.log(props.product);
         setProduct({
             id: props.product.productId, name: props.product.productName
         })
-        fetchProductDetail(props.product.productId);
+        refreshProductDetail(props.product.productId);
         setOpen(true);
     };
 
@@ -42,8 +34,8 @@ const ProductDetail = (props) => {
     };
 
     const columns = [
-        { Header: 'Article id', accessor: 'identification'},
-        { Header: 'Article Name', accessor: 'name'},
+        { Header: 'Article id', accessor: 'articleIdentification'},
+        { Header: 'Article Name', accessor: 'articleName'},
         { Header: 'Amount', accessor: 'totalArticle'},
         { Header: 'Stock', accessor: 'stock'},
     ];

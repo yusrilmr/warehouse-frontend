@@ -31,12 +31,13 @@ const useStyles = makeStyles((theme) => ({
 const AddProduct = (props) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [product, setProduct] = useState({ name: '' });
+    const [product, setProduct] = useState({ name: '', price: 0 });
     const [articles, setArticles] = useState([]);
     const [containArticles, setContainArticles] = useState([]);
     const [amounts, setAmounts] = useState([]);
 
     const [errorNameText, setErrorNameText] = useState('');
+    const [errorPriceText, setErrorPriceText] = useState('');
     const [errorArticleText, setErrorArticleText] = useState('');
     const [errorAmountText, setErrorAmountText] = useState('');
 
@@ -57,9 +58,10 @@ const AddProduct = (props) => {
     }
 
     const emptyErrorText = () => {
-        setErrorNameText('')
-        setErrorArticleText('')
-        setErrorAmountText('')
+        setErrorNameText('');
+        setErrorPriceText('');
+        setErrorArticleText('');
+        setErrorAmountText('');
     };
 
     const emptyArticlesAndAmounts = () => {
@@ -111,7 +113,7 @@ const AddProduct = (props) => {
     const handleClickOpen = () => {
         emptyErrorText();
         emptyArticlesAndAmounts();
-        setProduct({ name: '' });
+        setProduct({ name: '', price: 0 });
 
         // Get articles to be shows on the article's Select.
         new ArticleAPI().fetchArticles()
@@ -135,6 +137,7 @@ const AddProduct = (props) => {
         if (isValid()) {
             let entity = {
                 name: product.name,
+                price: product.price,
                 productArticles: []
             }
             for(let i = 0; i < containArticles.length; i++) {
@@ -155,6 +158,14 @@ const AddProduct = (props) => {
             setErrorNameText("This field is mandatory");
             valid = false;
         }
+        if (product.price < 0) {
+            setErrorPriceText("The field cannot be negative");
+            valid = false;
+        }
+        if (product.price === "") {
+            setErrorPriceText("The field cannot be empty");
+            valid = false;
+        }
         const isArticlesDuplicate = containArticles.some(
             (val, i) => containArticles.indexOf(val) !== i
         )
@@ -166,7 +177,7 @@ const AddProduct = (props) => {
             setErrorArticleText("cannot be empty");
             valid = false;
         }
-        if (amounts.some(el => el < 0)) {
+        if (amounts.some(el => el <= 0)) {
             setErrorAmountText("Value > 0");
             valid = false;
         }
@@ -184,6 +195,9 @@ const AddProduct = (props) => {
                     <TextField autoFocus required fullWidth label="Name" name="name" margin="dense"
                                value={product.name} onChange={handleChange}
                                error ={!!errorNameText.length} helperText={errorNameText} />
+                    <TextField autoFocus required fullWidth label="Price" name="price" margin="dense" type="number"
+                               defaultValue={0} value={product.price} onChange={handleChange}
+                               error ={!!errorPriceText.length} helperText={errorPriceText} />
                     {containArticles.map((containArticle, index) => (
                         <Box key={"article" + index}>
                             <Grid container spacing={1} alignItems="flex-end">
@@ -209,18 +223,11 @@ const AddProduct = (props) => {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <TextField
-                                        fullWidth
-                                        label="Amount"
-                                        name="amount"
-                                        type="number"
-                                        defaultValue={0}
-                                        error ={!!errorAmountText.length}
-                                        helperText={errorAmountText}
+                                    <TextField fullWidth label="Amount" name="amount" type="number" defaultValue={0}
+                                        error ={!!errorAmountText.length} helperText={errorAmountText}
                                         onChange={
                                             (e) => handleAmountChange(index, e)
-                                        }
-                                    />
+                                        } />
                                 </Grid>
                                 <Grid item xs={1}>
                                     <div
