@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Button from '@material-ui/core/Button';
 import {DropzoneDialog} from "material-ui-dropzone";
 import AttachFile from "@material-ui/icons/AttachFile";
-import {SERVER_URL} from "../../constants";
+import {SERVER_URL} from "../../services/config";
 import {toast} from "react-toastify";
 
 const AddProductFile = (props) => {

@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import ArticleList from './article/ArticleList';
-import {SERVER_URL} from '../constants.js';
+import {SERVER_URL} from '../services/config.js';
 
 const Login = () => {
     const [user, setUser] = useState({username: '', password: ''})

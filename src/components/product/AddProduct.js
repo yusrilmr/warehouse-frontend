@@ -16,7 +16,8 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import {SERVER_URL} from "../../constants";
+import {SERVER_URL} from "../../services/config";
+import ArticleAPI from "../../services/articleAPI";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -38,19 +39,6 @@ const AddProduct = (props) => {
     const [errorNameText, setErrorNameText] = useState('');
     const [errorArticleText, setErrorArticleText] = useState('');
     const [errorAmountText, setErrorAmountText] = useState('');
-
-    const fetchArticles = () => {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles/',
-            {
-                headers: {'Authorization': token}
-            })
-            .then((response) => response.json())
-            .then((responseData) => {
-                setArticles(responseData);
-            })
-            .catch(err => console.error(err));
-    }
 
     // Add new product
     const insertProduct = (product) => {
@@ -77,9 +65,14 @@ const AddProduct = (props) => {
     // Open the modal form
     const handleClickOpen = () => {
         emptyErrorText();
-        setProduct({ name: '' })
         emptyArticlesAndAmounts();
-        fetchArticles();
+        setProduct({ name: '' });
+
+        // Get articles to be shows on the article's Select.
+        new ArticleAPI().fetchArticles()
+            .then(responseData => { setArticles(responseData); })
+            .catch(err => console.error(err));
+
         setOpen(true);
     };
 

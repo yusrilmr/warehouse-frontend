@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { DropzoneDialog } from 'material-ui-dropzone'
 import Button from '@material-ui/core/Button';
 import AttachFile from '@material-ui/icons/AttachFile';
-import {SERVER_URL} from "../../constants";
+import {SERVER_URL} from "../../services/config";
 import {toast} from "react-toastify";
 
 const AddArticleFile = (props) => {
@@ -36,7 +36,7 @@ const AddArticleFile = (props) => {
                         toast.success("Article file uploaded", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
-                        props.fetchArticles();
+                        props.refreshArticles();
                     }
                     else if (res.status === 409) {
                         toast.error("Duplicate article", {

@@ -11,7 +11,7 @@ import AddArticle from './AddArticle';
 import AddArticleFile from './AddArticleFile';
 import EditArticle from './EditArticle';
 import MenuNav from '../MenuNav';
-import { SERVER_URL } from '../../constants.js';
+import ArticleAPI from "../../services/articleAPI";
 
 class ArticleList extends Component {
     constructor(props) {
@@ -20,42 +20,23 @@ class ArticleList extends Component {
     }
 
     componentDidMount() {
-        this.fetchArticles();
+        this.refreshArticles();
     }
 
-    fetchArticles = () => {
-        const token = sessionStorage.getItem("jwt");
-        console.log(token)
-        // const token = localStorage.getItem("token");
-        // console.log(token);
-        console.log(SERVER_URL + 'articles/');
-        fetch(SERVER_URL + 'articles/',
-            {
-                headers: {'Authorization': token}
-            })
-            .then((response) => response.json())
-            .then((responseData) => {
-                this.setState({
-                    articles: responseData,
-                });
-            })
+    refreshArticles = () => {
+        new ArticleAPI().fetchArticles()
+            .then(responseData => { this.setState({ articles: responseData }); })
             .catch(err => console.error(err));
     }
 
-    // Delete article
-    onDelClick = (id) => {
+    deleteArticle = (articleId) => {
         if (window.confirm('Are you sure to delete?')) {
-            const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'articles/' + id,
-                {
-                    method: 'DELETE',
-                    headers: {'Authorization': token}
-                })
+            new ArticleAPI().deleteArticle(articleId)
                 .then(res => {
                     toast.success("Article deleted", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    this.fetchArticles();
+                    this.refreshArticles();
                 })
                 .catch(err => {
                     toast.error("Error when deleting", {
@@ -66,44 +47,23 @@ class ArticleList extends Component {
         }
     }
 
-    // Add new article
-    addArticle(article) {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify(article)
-            })
-            .then(res => {
-                toast.success("New article saved", {
-                    position: toast.POSITION.BOTTOM_LEFT
-                });
-                this.fetchArticles()
-            })
-            .catch(err => console.error(err))
+    addArticle = (article) => {
+        new ArticleAPI().insertArticle(article).then(res => {
+            toast.success("New article saved", {
+                position: toast.POSITION.BOTTOM_LEFT
+            });
+            this.refreshArticles();
+        });
     }
 
     // Update article
-    updateArticle(article, id) {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'articles/' + id,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify(article)
-            })
+    updateArticle = (article, id) => {
+        new ArticleAPI().updateArticle(id, article)
             .then(res => {
                 toast.success("Changes saved", {
                     position: toast.POSITION.BOTTOM_LEFT
                 });
-                this.fetchArticles();
+                this.refreshArticles();
             })
             .catch(err =>
                 toast.error("Error when saving", {
@@ -137,7 +97,7 @@ class ArticleList extends Component {
             width: 100,
             accessor: 'id',
             Cell: ({value}) => (
-                <Button size="small" color="secondary" onClick={()=>{this.onDelClick(value)}}>
+                <Button size="small" color="secondary" onClick={()=>{this.deleteArticle(value)}}>
                     Delete
                 </Button>
             )
@@ -149,10 +109,10 @@ class ArticleList extends Component {
                         <MenuNav />
                     </Grid>
                     <Grid item>
-                        <AddArticle addArticle={this.addArticle} fetchArticles={this.fetchArticles} />
+                        <AddArticle addArticle={this.addArticle} />
                     </Grid>
                     <Grid item>
-                        <AddArticleFile addArticle={this.addArticle} fetchArticles={this.fetchArticles} />
+                        <AddArticleFile refreshArticles={this.refreshArticles} />
                     </Grid>
                 </Grid>
                 <ReactTable data={this.state.articles} columns={columns} filterable={true} defaultPageSize= {10}/>

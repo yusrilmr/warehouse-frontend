@@ -11,7 +11,7 @@ import AddProduct from './AddProduct';
 import AddProductFile from './AddProductFile';
 import EditProduct from './EditProduct';
 import ProductDetail from './ProductDetail';
-import { SERVER_URL } from '../../constants.js';
+import { SERVER_URL } from '../../services/config.js';
 import MenuNav from "../MenuNav";
 
 class ProductList extends Component {
