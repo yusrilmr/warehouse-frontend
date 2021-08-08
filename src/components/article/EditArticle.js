@@ -38,7 +38,7 @@ const EditArticle = (props) => {
                                value={article.identification} onChange={handleChange}/>
                     <TextField fullWidth label="Name" name="name"
                                value={article.name} onChange={handleChange}/>
-                    <TextField fullWidth label="Stock" name="stock"
+                    <TextField fullWidth label="Stock" name="stock" type="number"
                                value={article.stock} onChange={handleChange}/>
                 </DialogContent>
                 <DialogActions>

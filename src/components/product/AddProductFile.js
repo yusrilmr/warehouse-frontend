@@ -45,14 +45,14 @@ const AddProductFile = (props) => {
                         console.log(res)
                     }
                     else {
-                        toast.error("Error when uploading", {
+                        toast.error("Error when uploading. Please recheck your file.", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
                         console.log(res)
                     }
                 })
                 .catch(err => {
-                    toast.error("Error when uploading", {
+                    toast.error("Error when uploading. Please recheck your file.", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
                     console.error(err)

@@ -72,7 +72,7 @@ const SellProduct = (props) => {
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Cancel</Button>
-                    <Button color="primary" onClick={handleSave}>Save</Button>
+                    <Button color="primary" onClick={handleSave}>Sell</Button>
                 </DialogActions>
             </Dialog>
         </div>

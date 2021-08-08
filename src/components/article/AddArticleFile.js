@@ -33,7 +33,7 @@ const AddArticleFile = (props) => {
                 .then(res => {
                     console.log(res.status);
                     if (res.ok){
-                        toast.success("Article file uploaded", {
+                        toast.success("Article file uploaded.", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
                         props.refreshArticles();
@@ -45,14 +45,14 @@ const AddArticleFile = (props) => {
                         console.log(res)
                     }
                     else {
-                        toast.error("Error when uploading", {
+                        toast.error("Error when uploading. Please recheck your file.", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
                         console.log(res)
                     }
                 })
                 .catch(err => {
-                    toast.error("Error when uploading", {
+                    toast.error("Error when uploading. Please recheck your file.", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
                     console.error(err)

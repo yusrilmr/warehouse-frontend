@@ -47,14 +47,21 @@ class ProductList extends Component {
             const token = sessionStorage.getItem("jwt");
             fetch(SERVER_URL + 'products/sell/' + id + '/' + total,
                 {
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: {'Authorization': token}
                 })
                 .then(res => {
-                    toast.success("Product sold and inventory has been updated accordingly", {
-                        position: toast.POSITION.BOTTOM_LEFT
-                    });
-                    this.fetchProductQuantities();
+                    if (res.ok) {
+                        toast.success("Product sold and inventory has been updated accordingly", {
+                            position: toast.POSITION.BOTTOM_LEFT
+                        });
+                        this.fetchProductQuantities();
+                    }
+                    else if (res.status === 422){
+                        toast.error("The stock value cannot be negative after you sell a product", {
+                            position: toast.POSITION.BOTTOM_LEFT
+                        });
+                    }
                 })
                 .catch(err => {
                     toast.error("Error when deleting", {

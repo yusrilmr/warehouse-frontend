@@ -16,6 +16,11 @@ const MenuNav = ({ component: Component }) => {
         setAnchorEl(null);
     };
 
+    const handleLogout = () => {
+        sessionStorage.removeItem("jwt");
+        location.reload();
+    };
+
     return (
         <div>
             <Button aria-controls="simple-menu" aria-haspopup="true" variant="contained" color="primary"
@@ -30,6 +35,7 @@ const MenuNav = ({ component: Component }) => {
                 onClose={handleClose}>
                 <MenuItem ><Link to="/article">Article</Link></MenuItem>
                 <MenuItem ><Link to="/product">Product</Link></MenuItem>
+                <MenuItem ><Link onClick={handleLogout}>Logout</Link></MenuItem>
             </Menu>
 
         </div>
