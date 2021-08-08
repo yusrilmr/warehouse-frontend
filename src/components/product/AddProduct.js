@@ -77,6 +77,7 @@ const AddProduct = (props) => {
     // Open the modal form
     const handleClickOpen = () => {
         emptyErrorText();
+        setProduct({ name: '' })
         emptyArticlesAndAmounts();
         fetchArticles();
         setOpen(true);
@@ -113,7 +114,17 @@ const AddProduct = (props) => {
     // Save product and close modal form
     const handleSave = () => {
         if (isValid()) {
-            insertProduct(product);
+            let entity = {
+                name: product.name,
+                productArticles: []
+            }
+            for(let i = 0; i < containArticles.length; i++) {
+                entity.productArticles.push({
+                    articleId: containArticles[i],
+                    totalArticle: amounts[i]
+                });
+            }
+            insertProduct(entity);
             handleClose();
         }
     };
@@ -190,18 +201,17 @@ const AddProduct = (props) => {
                                         <InputLabel error={!!errorArticleText.length}>
                                             Article
                                         </InputLabel>
-                                        <Select
-                                            error={!!errorArticleText.length}
-                                            fullWidth
-                                            value={containArticle || ""}
+                                        <Select error={!!errorArticleText.length} fullWidth value={containArticle || ""}
                                             onChange={
                                                 (e) => handleArticleChange(index, e)
-                                            } >
-                                            {articles.map((article, index) => (
-                                                <MenuItem value={article.identification}>
-                                                    {article.identification + ' - ' + article.name}
-                                                </MenuItem>
-                                            ))}
+                                            }>
+                                            {
+                                                articles.map((article, index) => (
+                                                    <MenuItem value={article.id}>
+                                                        {article.identification + ' - ' + article.name}
+                                                    </MenuItem>
+                                                ))
+                                            }
                                         </Select>
                                         <FormHelperText>{errorArticleText}</FormHelperText>
                                     </FormControl>
