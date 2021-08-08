@@ -11,6 +11,7 @@ import AddProduct from './AddProduct';
 import AddProductFile from './AddProductFile';
 import EditProduct from './EditProduct';
 import ProductDetail from './ProductDetail';
+import SellProduct from './SellProduct';
 import { SERVER_URL } from '../../services/config.js';
 import MenuNav from "../MenuNav";
 
@@ -41,10 +42,10 @@ class ProductList extends Component {
             .catch(err => console.error(err));
     }
 
-    sellProduct = (id) => {
+    sellProduct = (id, total) => {
         if (window.confirm('Are you sure to sell this product?')) {
             const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'products/sell/' + id,
+            fetch(SERVER_URL + 'products/sell/' + id + '/' + total,
                 {
                     method: 'DELETE',
                     headers: {'Authorization': token}
@@ -135,10 +136,7 @@ class ProductList extends Component {
             width: 100,
             accessor: 'productId',
             Cell: ({value, row}) => (
-                <Button size="small" color="primary" disabled={row.quantity <= 0}
-                        onClick={()=>{this.sellProduct(value)}}>
-                    Sell
-                </Button>
+                <SellProduct product={row} productId={value} sellProduct={this.sellProduct} />
             )
         }, {
             sortable: false,
