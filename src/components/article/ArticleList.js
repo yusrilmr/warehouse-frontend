@@ -56,7 +56,6 @@ class ArticleList extends Component {
         });
     }
 
-    // Update article
     updateArticle = (article, id) => {
         new ArticleAPI().updateArticle(id, article)
             .then(res => {
@@ -88,8 +87,7 @@ class ArticleList extends Component {
             width: 100,
             accessor: 'id',
             Cell: ({value, row}) => (
-                <EditArticle article={row} link={value} updateArticle={this.updateArticle}
-                             fetchArticles={this.fetchArticles} />
+                <EditArticle article={row} link={value} updateArticle={this.updateArticle} />
             )
         }, {
             sortable: false,

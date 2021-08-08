@@ -24,7 +24,6 @@ const EditArticle = (props) => {
     const handleChange = (event) => {
         setArticle({...article, [event.target.name]: event.target.value});
     }
-    // Update article and close modal form
     const handleSave = () => {
         props.updateArticle(article, props.link);
         handleClose();

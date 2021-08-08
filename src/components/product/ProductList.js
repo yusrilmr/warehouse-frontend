@@ -151,7 +151,7 @@ class ProductList extends Component {
             width: 100,
             accessor: 'productId',
             Cell: ({value, row}) => (
-                <EditProduct product={row} link={value} updateProduct={this.updateProduct}
+                <EditProduct product={row} productId={value} updateProduct={this.updateProduct}
                              fetchProductQuantities={this.fetchProductQuantities} />
             )
         }, {

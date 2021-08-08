@@ -32,9 +32,9 @@ const AddProduct = (props) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [product, setProduct] = useState({ name: '' });
+    const [articles, setArticles] = useState([]);
     const [containArticles, setContainArticles] = useState([]);
     const [amounts, setAmounts] = useState([]);
-    const [articles, setArticles] = useState([]);
 
     const [errorNameText, setErrorNameText] = useState('');
     const [errorArticleText, setErrorArticleText] = useState('');
@@ -62,6 +62,51 @@ const AddProduct = (props) => {
         setErrorAmountText('')
     };
 
+    const emptyArticlesAndAmounts = () => {
+        setContainArticles([]);
+        setAmounts([]);
+    };
+
+    const addArticleAndAmount = (article, amount) => {
+        setContainArticles([...containArticles, article]);
+        setAmounts([...amounts, amount]);
+    };
+
+    const deleteArticleAndAmount = (index) => {
+        const arrContainArticles = [...containArticles];
+        const arrAmounts = [...amounts];
+        arrContainArticles.splice(index, 1);
+        arrAmounts.splice(index, 1);
+        setContainArticles(arrContainArticles);
+        setAmounts(arrAmounts);
+    };
+
+    const handleAddArticle = () => {
+        addArticleAndAmount("", 0);
+    };
+
+    const handleArticleChange = (index, e) => {
+        const updatedArticles = containArticles.map((value, i) => {
+            if (i === index) {
+                return e.target.value;
+            } else {
+                return value;
+            }
+        });
+        setContainArticles(updatedArticles);
+    };
+
+    const handleAmountChange = (index, e) => {
+        const updatedAmounts = amounts.map((value, i) => {
+            if (i === index) {
+                return e.target.value;
+            } else {
+                return value;
+            }
+        });
+        setAmounts(updatedAmounts);
+    };
+
     // Open the modal form
     const handleClickOpen = () => {
         emptyErrorText();
@@ -74,25 +119,6 @@ const AddProduct = (props) => {
             .catch(err => console.error(err));
 
         setOpen(true);
-    };
-
-    const emptyArticlesAndAmounts = () => {
-        setContainArticles([]);
-        setAmounts([]);
-    }
-
-    const addArticleAndAmount = (article, amount) => {
-        setContainArticles([...containArticles, article]);
-        setAmounts([...amounts, amount]);
-    }
-
-    const deleteArticleAndAmount = (index) => {
-        const arrContainArticles = [...containArticles];
-        const arrAmounts = [...amounts];
-        arrContainArticles.splice(index, 1);
-        arrAmounts.splice(index, 1);
-        setContainArticles(arrContainArticles);
-        setAmounts(arrAmounts);
     };
 
     // Close the modal form
@@ -120,32 +146,6 @@ const AddProduct = (props) => {
             insertProduct(entity);
             handleClose();
         }
-    };
-
-    const handleAddArticle = () => {
-        addArticleAndAmount("", 0);
-    }
-
-    const handleArticleChange = (index, e) => {
-        const updatedArticles = containArticles.map((value, i) => {
-            if (i === index) {
-                return e.target.value;
-            } else {
-                return value;
-            }
-        });
-        setContainArticles(updatedArticles);
-    };
-
-    const handleAmountChange = (index, e) => {
-        const updatedAmounts = amounts.map((value, i) => {
-            if (i === index) {
-                return e.target.value;
-            } else {
-                return value;
-            }
-        });
-        setAmounts(updatedAmounts);
     };
 
     const isValid = () => {
@@ -181,11 +181,9 @@ const AddProduct = (props) => {
             <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
                 <DialogTitle>Add Product</DialogTitle>
                 <DialogContent>
-
                     <TextField autoFocus required fullWidth label="Name" name="name" margin="dense"
                                value={product.name} onChange={handleChange}
                                error ={!!errorNameText.length} helperText={errorNameText} />
-
                     {containArticles.map((containArticle, index) => (
                         <Box key={"article" + index}>
                             <Grid container spacing={1} alignItems="flex-end">
@@ -194,7 +192,8 @@ const AddProduct = (props) => {
                                         <InputLabel error={!!errorArticleText.length}>
                                             Article
                                         </InputLabel>
-                                        <Select error={!!errorArticleText.length} fullWidth value={containArticle || ""}
+                                        <Select
+                                            error={!!errorArticleText.length} fullWidth value={containArticle || ""}
                                             onChange={
                                                 (e) => handleArticleChange(index, e)
                                             }>
@@ -235,11 +234,9 @@ const AddProduct = (props) => {
                             </Grid>
                         </Box>
                     ))}
-
                     <Button fullWidth onClick={handleAddArticle} color="primary">
                         Add Article
                     </Button>
-
                 </DialogContent>
                 <DialogActions>
                     <Button color="secondary" onClick={handleClose}>Cancel</Button>
