@@ -10,15 +10,12 @@ import TextField from '@material-ui/core/TextField';
 
 const AddArticle = (props) => {
     const [open, setOpen] = useState(false);
-    // const [errorText, setErrorText] = useState({ identification: '', name: '', stock: '' });
     const [errorIdentificationText, setErrorIdentificationText] = useState('');
     const [errorNameText, setErrorNameText] = useState('');
     const [errorStockText, setErrorStockText] = useState('');
-
     const [article, setArticle] = useState({ identification: '', name: '', stock: 0 });
 
     const emptyErrorText = () => {
-        // setErrorText({ identification: '', name: '', stock: '' })
         setErrorIdentificationText('');
         setErrorNameText('');
         setErrorStockText('');
@@ -52,17 +49,14 @@ const AddArticle = (props) => {
         emptyErrorText();
         let valid = true;
         if (article.identification === '') {
-            // setErrorText({...errorText, identification: "This field is mandatory"});
             setErrorIdentificationText("This field is mandatory");
             valid = false;
         }
         if (article.name === '') {
-            // setErrorText({...errorText, name: "This field is mandatory"});
             setErrorNameText("This field is mandatory")
             valid = false;
         }
         if (article.stock < 0) {
-            // setErrorText({...errorText, stock: "This field cannot be less than 0"});
             setErrorStockText("This field cannot be less than 0")
             valid = false;
         }

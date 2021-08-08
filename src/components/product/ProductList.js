@@ -85,22 +85,6 @@ class ProductList extends Component {
             })
     }
 
-    // Add new product
-    addProduct(product) {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify(product)
-            })
-            .then(res => this.fetchProductQuantities())
-            .catch(err => console.error(err))
-    }
-
     // Update product
     updateProduct(product, productId) {
         const token = sessionStorage.getItem("jwt");
@@ -188,10 +172,10 @@ class ProductList extends Component {
                         <MenuNav />
                     </Grid>
                     <Grid item>
-                        <AddProduct addProduct={this.addProduct} fetchProductQuantities={this.fetchProductQuantities} />
+                        <AddProduct fetchProductQuantities={this.fetchProductQuantities} />
                     </Grid>
                     <Grid item>
-                        <AddProductFile addProduct={this.addProduct} fetchProductQuantities={this.fetchProductQuantities} />
+                        <AddProductFile fetchProductQuantities={this.fetchProductQuantities} />
                     </Grid>
                 </Grid>
                 <ReactTable data={this.state.productQuantities} columns={columns} filterable={true} defaultPageSize= {10}/>
