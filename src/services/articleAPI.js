@@ -47,7 +47,20 @@ class ArticleAPI {
                                 'Authorization': this.token
                             },
                             body: JSON.stringify(article)
-                        })
+                        });
+        return result;
+    }
+
+    async uploadArticleFile (fileContent) {
+        const result = fetch(SERVER_URL + 'articles/upload',
+                    {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': this.token
+                            },
+                            body: fileContent
+                        });
         return result;
     }
 }

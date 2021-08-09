@@ -42,7 +42,6 @@ class ArticleList extends Component {
                     toast.error("Error when deleting", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    console.error(err)
                 })
         }
     }

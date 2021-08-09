@@ -37,7 +37,6 @@ const Login = () => {
             toast.error("Something went wrong with the system.", {
                 position: toast.POSITION.BOTTOM_LEFT
             });
-            console.error(err)
         })
     }
 

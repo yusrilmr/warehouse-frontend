@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { DropzoneDialog } from 'material-ui-dropzone'
 import Button from '@material-ui/core/Button';
 import AttachFile from '@material-ui/icons/AttachFile';
-import {SERVER_URL} from "../../services/config";
 import {toast} from "react-toastify";
+import ArticleAPI from "../../services/articleAPI";
 
 const AddArticleFile = (props) => {
     const [open, setOpen] = useState(false);
@@ -20,18 +20,8 @@ const AddArticleFile = (props) => {
         fileReader.readAsText(files[0], "UTF-8");
         fileReader.onload = e => {
             const fileContent = e.target.result;
-            const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'articles/upload',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token
-                    },
-                    body: fileContent
-                })
+            new ArticleAPI().uploadArticleFile(fileContent)
                 .then(res => {
-                    console.log(res.status);
                     if (res.ok){
                         toast.success("Article file uploaded.", {
                             position: toast.POSITION.BOTTOM_LEFT
@@ -42,20 +32,17 @@ const AddArticleFile = (props) => {
                         toast.error("Duplicate article", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
-                        console.log(res)
                     }
                     else {
                         toast.error("Error when uploading. Please recheck your file.", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
-                        console.log(res)
                     }
                 })
                 .catch(err => {
                     toast.error("Error when uploading. Please recheck your file.", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    console.error(err)
                 })
         };
         setOpen(false);

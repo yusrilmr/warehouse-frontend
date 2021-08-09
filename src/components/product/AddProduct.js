@@ -16,8 +16,8 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import {SERVER_URL} from "../../services/config";
 import ArticleAPI from "../../services/articleAPI";
+import ProductAPI from "../../services/productAPI";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -43,16 +43,7 @@ const AddProduct = (props) => {
 
     // Add new product
     const insertProduct = (product) => {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify(product)
-            })
+        new ProductAPI().insertProduct(product)
             .then(res => props.fetchProductQuantities())
             .catch(err => console.error(err))
     }

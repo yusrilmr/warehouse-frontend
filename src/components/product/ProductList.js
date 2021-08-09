@@ -14,6 +14,7 @@ import ProductDetail from './ProductDetail';
 import SellProduct from './SellProduct';
 import { SERVER_URL } from '../../services/config.js';
 import MenuNav from "../MenuNav";
+import ProductAPI from "../../services/productAPI";
 
 class ProductList extends Component {
     constructor(props) {
@@ -28,12 +29,7 @@ class ProductList extends Component {
     }
 
     fetchProductQuantities = () => {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'product-quantities/',
-            {
-                headers: {'Authorization': token}
-            })
-            .then((response) => response.json())
+        new ProductAPI().fetchProductQuantities()
             .then((responseData) => {
                 this.setState({
                     productQuantities: responseData,
@@ -44,12 +40,7 @@ class ProductList extends Component {
 
     sellProduct = (id, total) => {
         if (window.confirm('Are you sure to sell this product?')) {
-            const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'products/sell/' + id + '/' + total,
-                {
-                    method: 'PUT',
-                    headers: {'Authorization': token}
-                })
+            new ProductAPI().sellProduct(id, total)
                 .then(res => {
                     if (res.ok) {
                         toast.success("Product sold and inventory has been updated accordingly", {
@@ -67,18 +58,12 @@ class ProductList extends Component {
                     toast.error("Error when deleting", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    console.error(err)
                 })
         }
     }
 
     deleteProduct(productId) {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products/' + productId,
-            {
-                method: 'DELETE',
-                headers: {'Authorization': token}
-            })
+        new ProductAPI().deleteProduct(productId)
             .then(res => {
                 toast.success("Product deleted", {
                     position: toast.POSITION.BOTTOM_LEFT
@@ -89,22 +74,12 @@ class ProductList extends Component {
                 toast.error("Error when deleting", {
                     position: toast.POSITION.BOTTOM_LEFT
                 });
-                console.error(err)
             })
     }
 
     // Update product
     updateProduct(product, productId) {
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'products/' + productId,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify(product)
-            })
+        new ProductAPI().updateProduct(productId, product)
             .then(res => {
                 toast.success("Changes saved", {
                     position: toast.POSITION.BOTTOM_LEFT

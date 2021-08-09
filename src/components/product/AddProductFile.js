@@ -1,11 +1,10 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import PropTypes from "prop-types";
 import Button from '@material-ui/core/Button';
 import {DropzoneDialog} from "material-ui-dropzone";
 import AttachFile from "@material-ui/icons/AttachFile";
-import {SERVER_URL} from "../../services/config";
 import {toast} from "react-toastify";
+import ProductAPI from "../../services/productAPI";
 
 const AddProductFile = (props) => {
     const [open, setOpen] = useState(false);
@@ -21,16 +20,7 @@ const AddProductFile = (props) => {
         fileReader.readAsText(files[0], "UTF-8");
         fileReader.onload = e => {
             const fileContent = e.target.result;
-            const token = sessionStorage.getItem("jwt");
-            fetch(SERVER_URL + 'products/upload',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token
-                    },
-                    body: fileContent
-                })
+            new ProductAPI().uploadProductFile(fileContent)
                 .then(res => {
                     if (res.ok){
                         toast.success("Products file uploaded", {
@@ -42,20 +32,17 @@ const AddProductFile = (props) => {
                         toast.error("Duplicate product", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
-                        console.log(res)
                     }
                     else {
                         toast.error("Error when uploading. Please recheck your file.", {
                             position: toast.POSITION.BOTTOM_LEFT
                         });
-                        console.log(res)
                     }
                 })
                 .catch(err => {
                     toast.error("Error when uploading. Please recheck your file.", {
                         position: toast.POSITION.BOTTOM_LEFT
                     });
-                    console.error(err)
                 })
         };
         setOpen(false);

@@ -17,7 +17,6 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ProductAPI from "../../services/productAPI";
-import {SERVER_URL} from "../../services/config";
 import {toast} from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
@@ -89,12 +88,7 @@ const EditProduct = (props) => {
 
     const deleteProductArticle = (index) => {
         const productArticleId = productArticleIds[index];
-        const token = sessionStorage.getItem("jwt");
-        fetch(SERVER_URL + 'product-articles/' + productArticleId,
-            {
-                method: 'DELETE',
-                headers: {'Authorization': token}
-            })
+        new ProductAPI().deleteProductArticle(productArticleId)
             .then(res => {
                 deleteProductArticleUI(index);
                 toast.success("article is removed from the product", {
@@ -105,7 +99,6 @@ const EditProduct = (props) => {
                 toast.error("Error when deleting", {
                     position: toast.POSITION.BOTTOM_LEFT
                 });
-                console.error(err)
             })
     };
 

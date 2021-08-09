@@ -27,12 +27,7 @@ const MenuNav = ({ component: Component }) => {
                     style={{margin: 10}} onClick={handleClick}>
                 Menu
             </Button>
-            <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}>
+            <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
                 <MenuItem ><Link to="/article">Article</Link></MenuItem>
                 <MenuItem ><Link to="/product">Product</Link></MenuItem>
                 <MenuItem ><Link onClick={handleLogout}>Logout</Link></MenuItem>
