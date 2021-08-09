@@ -12,7 +12,6 @@ import AddProductFile from './AddProductFile';
 import EditProduct from './EditProduct';
 import ProductDetail from './ProductDetail';
 import SellProduct from './SellProduct';
-import { SERVER_URL } from '../../services/config.js';
 import MenuNav from "../MenuNav";
 import ProductAPI from "../../services/productAPI";
 
@@ -118,7 +117,7 @@ class ProductList extends Component {
             width: 100,
             accessor: 'productId',
             Cell: ({value, row}) => (
-                <SellProduct product={row} productId={value} sellProduct={this.sellProduct} />
+                <SellProduct product={row} productId={value} quantity={row.quantity} sellProduct={this.sellProduct} />
             )
         }, {
             sortable: false,

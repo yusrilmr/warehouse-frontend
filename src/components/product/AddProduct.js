@@ -186,7 +186,7 @@ const AddProduct = (props) => {
                     <TextField autoFocus required fullWidth label="Name" name="name" margin="dense"
                                value={product.name} onChange={handleChange}
                                error ={!!errorNameText.length} helperText={errorNameText} />
-                    <TextField autoFocus required fullWidth label="Price" name="price" margin="dense" type="number"
+                    <TextField required fullWidth label="Price" name="price" margin="dense" type="number"
                                defaultValue={0} value={product.price} onChange={handleChange}
                                error ={!!errorPriceText.length} helperText={errorPriceText} />
                     {containArticles.map((containArticle, index) => (

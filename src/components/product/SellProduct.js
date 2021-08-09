@@ -52,7 +52,7 @@ const SellProduct = (props) => {
             valid = false;
         }
         if (totalSell > props.product.quantity) {
-            setErrorTotalSellText("It cannot be more than " + props.product.quantity)
+            setErrorTotalSellText("It cannot be more than " + props.quantity)
             valid = false;
         }
         return valid;
@@ -60,7 +60,7 @@ const SellProduct = (props) => {
 
     return (
         <div>
-            <Button size="small" color="primary" disabled={props.product.quantity <= 0} onClick={handleClickOpen}>
+            <Button size="small" color="primary" disabled={props.quantity <= 0} onClick={handleClickOpen}>
                 Sell
             </Button>
             <Dialog open={open} onClose={handleClose}>
