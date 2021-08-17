@@ -5,7 +5,6 @@
   |  | jQuery | Angular | React | Vue |
   | ------ | ------ | ------ | ------ | ------ |
   | Trend [[8][8]] | Most popular, but going downward | The third most popular | The second most popular, overtook angular in 2018 | The least popular |
-  | Is it used by Ingka? | No  | No | Yes [[3][3]] | No |
 
 ## Assumptions
 There are some assumptions related to the assignment description:
